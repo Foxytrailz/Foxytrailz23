@@ -1,23 +1,208 @@
-
 <!DOCTYPE html>
-<html>
-<head>
-  <title>FoxyTrailz23 Hub</title>
-  <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-      overflow: hidden;
-    }
-    iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
-    }
-  </style>
-</head>
-<body>
-  <iframe src="https://sites.google.com/view/foxytrailz23?usp=sharing" allowfullscreen></iframe>
-</body>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FoxyTrailz23 Video Transform Studio</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background: #111827;
+        color: #f3f4f6;
+      }
+
+      .app {
+        display: grid;
+        grid-template-columns: minmax(320px, 360px) 1fr;
+        min-height: 100vh;
+      }
+
+      .panel {
+        padding: 1rem;
+        border-right: 1px solid #374151;
+        background: #0f172a;
+        overflow-y: auto;
+      }
+
+      .panel h1 {
+        margin-top: 0;
+        font-size: 1.2rem;
+      }
+
+      .controls {
+        display: grid;
+        gap: 0.75rem;
+      }
+
+      fieldset {
+        border: 1px solid #374151;
+        border-radius: 8px;
+        padding: 0.75rem;
+      }
+
+      legend {
+        color: #93c5fd;
+        padding: 0 0.25rem;
+      }
+
+      .row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.5rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .row:last-child {
+        margin-bottom: 0;
+      }
+
+      label {
+        display: grid;
+        gap: 0.25rem;
+        font-size: 0.9rem;
+      }
+
+      input,
+      button {
+        font: inherit;
+        border-radius: 6px;
+        border: 1px solid #4b5563;
+        padding: 0.45rem 0.55rem;
+        background: #111827;
+        color: #f9fafb;
+      }
+
+      button {
+        cursor: pointer;
+        background: #1d4ed8;
+        border-color: #1d4ed8;
+      }
+
+      button:hover {
+        background: #2563eb;
+      }
+
+      .full {
+        width: 100%;
+      }
+
+      .canvas-wrap {
+        position: relative;
+        overflow: hidden;
+        background: #000;
+      }
+
+      canvas {
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+
+      .site-link {
+        display: inline-block;
+        margin-top: 0.75rem;
+        color: #93c5fd;
+        text-decoration: none;
+        font-size: 0.9rem;
+      }
+
+      .site-link:hover {
+        color: #bfdbfe;
+      }
+
+      .matrix {
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: 0.8rem;
+        line-height: 1.4;
+        white-space: pre-wrap;
+        background: #111827;
+        border: 1px solid #374151;
+        border-radius: 6px;
+        padding: 0.5rem;
+        margin-top: 0.5rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app">
+      <aside class="panel">
+        <h1>Video Transform Studio</h1>
+        <a class="site-link" href="https://foxytrailz23.com" target="_blank" rel="noreferrer">foxytrailz23.com</a>
+        <div class="controls">
+          <fieldset>
+            <legend>Video</legend>
+            <label>
+              Upload video
+              <input id="video-file" type="file" accept="video/*" />
+            </label>
+            <div class="row">
+              <button id="play-btn" type="button">Play</button>
+              <button id="pause-btn" type="button">Pause</button>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Scale</legend>
+            <div class="row">
+              <label>Scale X <input id="scale-x" type="number" value="1" step="0.1" /></label>
+              <label>Scale Y <input id="scale-y" type="number" value="1" step="0.1" /></label>
+            </div>
+            <button id="apply-scale" type="button" class="full">context.scale(x, y)</button>
+          </fieldset>
+
+          <fieldset>
+            <legend>Rotate & Translate</legend>
+            <div class="row">
+              <label>Rotate ° <input id="rotate-deg" type="number" value="0" step="1" /></label>
+              <label>Translate X <input id="translate-x" type="number" value="0" step="1" /></label>
+            </div>
+            <div class="row">
+              <label>Translate Y <input id="translate-y" type="number" value="0" step="1" /></label>
+              <button id="apply-rotate" type="button">context.rotate(rad)</button>
+            </div>
+            <button id="apply-translate" type="button" class="full">context.translate(x, y)</button>
+          </fieldset>
+
+          <fieldset>
+            <legend>Transform Matrix</legend>
+            <div class="row">
+              <label>a <input id="m-a" type="number" value="1" step="0.1" /></label>
+              <label>b <input id="m-b" type="number" value="0" step="0.1" /></label>
+            </div>
+            <div class="row">
+              <label>c <input id="m-c" type="number" value="0" step="0.1" /></label>
+              <label>d <input id="m-d" type="number" value="1" step="0.1" /></label>
+            </div>
+            <div class="row">
+              <label>e <input id="m-e" type="number" value="0" step="1" /></label>
+              <label>f <input id="m-f" type="number" value="0" step="1" /></label>
+            </div>
+            <div class="row">
+              <button id="apply-transform" type="button">context.transform(...)</button>
+              <button id="apply-set-transform" type="button">context.setTransform(...)</button>
+            </div>
+            <button id="reset-transform" type="button" class="full">context.resetTransform()</button>
+            <button id="sync-get-transform" type="button" class="full">matrix = context.getTransform()</button>
+            <div id="matrix-output" class="matrix"></div>
+          </fieldset>
+        </div>
+      </aside>
+
+      <main class="canvas-wrap">
+        <canvas id="video-canvas"></canvas>
+      </main>
+    </div>
+
+    <script type="module" src="./dist/app.js"></script>
+  </body>
 </html>
